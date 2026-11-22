@@ -16,13 +16,16 @@
     --gold: #c49a3c;
     --text: #3a2d28;
     --muted: #7a665f;
-    --border: rgba(76, 98, 56, 0.22);
+    --border: rgba(76, 98, 56, 0.24);
+    --env-body: #fffdf9;
+    --env-flap: #efe2d4;
+    --env-pocket: #f6ebe0;
     --seal-bg: radial-gradient(circle at 30% 30%, #7d9664, #475c34);
-    --seal-border: #d7dfb8;
-    --seal-text: #f7f9ef;
+    --seal-border: #e6ecd0;
+    --seal-text: #f8faf2;
   }
 
-  /* القالب 1: وردي ناعم وزيتوني (مستوحى من الفيديو بدون صور أشخاص) */
+  /* القالب 1: وردي ناعم وزيتوني */
   body.theme-blush-olive {
     --bg: #f6e3dc;
     --surface: #fff9f6;
@@ -33,15 +36,18 @@
     --gold: #c49a3c;
     --text: #3a2d28;
     --muted: #7a665f;
-    --border: rgba(76, 98, 56, 0.24);
+    --border: rgba(76, 98, 56, 0.25);
+    --env-body: #fffdf9;
+    --env-flap: #eddcd0;
+    --env-pocket: #f5e6dc;
     --seal-bg: radial-gradient(circle at 30% 30%, #7f9866, #465a33);
-    --seal-border: #dce4be;
+    --seal-border: #e9efe0;
     --seal-text: #f8faf2;
   }
 
   /* القالب 2: عاجي ملكي وعنابي ذهبي */
   body.theme-royal-ivory {
-    --bg: #f7efe8;
+    --bg: #f6ede4;
     --surface: #fffdfb;
     --card: #ffffff;
     --primary: #7c2432;
@@ -50,27 +56,33 @@
     --gold: #c89d3c;
     --text: #2c1e20;
     --muted: #6e585b;
-    --border: rgba(124, 36, 50, 0.22);
-    --seal-bg: radial-gradient(circle at 30% 30%, #9e3345, #5e1824);
-    --seal-border: #f0d78c;
-    --seal-text: #fff5d6;
+    --border: rgba(124, 36, 50, 0.24);
+    --env-body: #fffcf7;
+    --env-flap: #ead5c5;
+    --env-pocket: #f3e3d6;
+    --seal-bg: radial-gradient(circle at 30% 30%, #a33446, #5e1824);
+    --seal-border: #f3dc94;
+    --seal-text: #fff7dd;
   }
 
   /* القالب 3: زمرّدي ليلي وذهبي عتيق */
   body.theme-emerald-gold {
-    --bg: #eef5f0;
-    --surface: #f8fcf9;
+    --bg: #e7f1ec;
+    --surface: #f5fbf8;
     --card: #ffffff;
-    --primary: #1b5442;
-    --primary-dark: #10382c;
-    --accent: #2f7d64;
-    --gold: #c29938;
-    --text: #172923;
-    --muted: #526b62;
-    --border: rgba(27, 84, 66, 0.24);
-    --seal-bg: radial-gradient(circle at 30% 30%, #2a785f, #134032);
-    --seal-border: #ebd48d;
-    --seal-text: #f9f5e6;
+    --primary: #184e3d;
+    --primary-dark: #0f3428;
+    --accent: #2c7860;
+    --gold: #c49a3b;
+    --text: #162922;
+    --muted: #4f6960;
+    --border: rgba(24, 78, 61, 0.26);
+    --env-body: #193f33;
+    --env-flap: #235746;
+    --env-pocket: #143329;
+    --seal-bg: radial-gradient(circle at 30% 30%, #e4c264, #9b771c);
+    --seal-border: #fff3c9;
+    --seal-text: #132922;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -82,7 +94,7 @@
     line-height: 1.7;
   }
 
-  /* --- شاشة الظرف الافتتاحي --- */
+  /* --- شاشة الظرف --- */
   #envelope-screen {
     position: fixed;
     inset: 0;
@@ -93,26 +105,28 @@
     align-items: center;
     justify-content: center;
     padding: 18px;
-    transition: opacity 0.75s ease, visibility 0.75s ease;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
   }
   #envelope-screen.opened {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
   }
+
+  .env-header-box {
+    text-align: center;
+    margin-bottom: 14px;
+  }
   .env-top-note {
     font-family: 'Amiri', serif;
     font-size: 1.05rem;
     color: var(--muted);
-    margin-bottom: 6px;
-    text-align: center;
   }
   .env-couple-title {
     font-family: 'Aref Ruqaa', 'Amiri', serif;
-    font-size: 1.9rem;
+    font-size: 1.95rem;
     color: var(--primary);
-    margin-bottom: 18px;
-    text-align: center;
+    line-height: 1.3;
   }
   .env-couple-title span.amp {
     color: var(--accent);
@@ -120,63 +134,70 @@
     font-size: 1.4rem;
   }
 
-  .envelope-box {
-    position: relative;
-    width: 325px;
-    max-width: 94vw;
-    height: 430px;
+  .env-ribbon-top {
     background: var(--surface);
-    border-radius: 16px;
-    box-shadow: 0 22px 55px rgba(45, 25, 20, 0.18);
-    border: 1.5px solid var(--border);
-    overflow: hidden;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 16px;
-  }
-
-  /* زخرفة هندسية علوية وسفلية بدون أرواح */
-  .geo-border-top, .geo-border-bottom {
-    width: 100%;
-    height: 54px;
-    border: 1px dashed var(--border);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Amiri', serif;
     color: var(--primary);
-    font-size: 0.95rem;
-    background: rgba(255,255,255,0.55);
+    border: 1px solid var(--border);
+    padding: 5px 16px;
+    border-radius: 30px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
 
+  /* جسم الظرف المحسّن */
+  .envelope-shell {
+    position: relative;
+    width: 330px;
+    max-width: 94vw;
+    height: 235px;
+    background: var(--env-body);
+    border-radius: 16px;
+    border: 1.5px solid var(--gold);
+    box-shadow: 0 22px 50px rgba(35, 22, 18, 0.2);
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  /* الجيب السفلي للظرف مع طيّتين جانبيتين */
+  .envelope-pocket {
+    position: absolute;
+    inset: 0;
+    background: var(--env-pocket);
+    clip-path: polygon(0 38%, 50% 72%, 100% 38%, 100% 100%, 0 100%);
+    z-index: 2;
+    border-top: 1px solid var(--border);
+  }
+
+  /* غطاء الظرف العلوي */
   .envelope-flap {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 205px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.92), var(--bg));
+    height: 122px;
+    background: var(--env-flap);
     clip-path: polygon(0 0, 100% 0, 50% 100%);
     transform-origin: top;
-    transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 3;
-    border-bottom: 1px solid var(--border);
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 4;
   }
-  .envelope-box.opening .envelope-flap {
+  .envelope-shell.opening .envelope-flap {
     transform: rotateX(180deg);
   }
 
+  /* الختم الشمعي في منتصف التقاء الغطاء */
   .wax-seal {
-    position: relative;
+    position: absolute;
+    top: 84px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 5;
-    width: 84px;
-    height: 84px;
+    width: 76px;
+    height: 76px;
     border-radius: 50%;
     background: var(--seal-bg);
     border: 3px solid var(--seal-border);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.24);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -186,27 +207,39 @@
     font-weight: 700;
     transition: transform 0.45s ease, opacity 0.45s ease;
   }
-  .wax-seal .initials { font-size: 1.35rem; line-height: 1.1; }
-  .wax-seal .seal-sub { font-size: 0.68rem; opacity: 0.9; margin-top: 2px; }
-  .envelope-box.opening .wax-seal {
-    transform: scale(1.3);
+  .wax-seal .initials { font-size: 1.25rem; line-height: 1.1; }
+  .wax-seal .seal-tag { font-size: 0.65rem; opacity: 0.92; margin-top: 2px; }
+  .envelope-shell.opening .wax-seal {
+    transform: translateX(-50%) scale(1.25);
     opacity: 0;
   }
 
-  .guest-badge {
-    position: relative;
-    z-index: 4;
-    background: #ffffff;
+  /* اسم الضيف أسفل الظرف */
+  .env-guest-card {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    right: 16px;
+    z-index: 5;
+    background: var(--surface);
     border: 1px solid var(--border);
-    padding: 8px 18px;
-    border-radius: 30px;
-    font-size: 0.92rem;
+    border-radius: 12px;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 0.9rem;
     color: var(--text);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
-  .guest-badge strong { color: var(--primary); }
+  .env-guest-card strong { color: var(--primary); }
 
-  /* --- الستائر الجانبية والإطار الزخرفي داخل الدعوة --- */
+  .env-footer-hint {
+    margin-top: 16px;
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  /* --- الستائر الجانبية ومحتوى الدعوة --- */
   .page-wrap {
     position: relative;
     max-width: 520px;
@@ -215,9 +248,8 @@
   }
   .side-drape {
     position: fixed;
-    top: 0;
-    bottom: 0;
-    width: 22px;
+    top: 0; bottom: 0;
+    width: 20px;
     pointer-events: none;
     z-index: 2;
     opacity: 0.55;
@@ -249,7 +281,6 @@
     font-family: 'Amiri', serif;
     font-size: 1.05rem;
     color: var(--accent);
-    letter-spacing: 1px;
     margin-bottom: 8px;
   }
   .verse {
@@ -403,7 +434,6 @@
     border: 1px solid var(--border);
   }
 
-  /* --- البرنامج الزمني --- */
   .schedule-list {
     position: relative;
     text-align: right;
@@ -413,9 +443,7 @@
   .schedule-list::before {
     content: "";
     position: absolute;
-    top: 8px;
-    bottom: 8px;
-    right: 6px;
+    top: 8px; bottom: 8px; right: 6px;
     width: 2px;
     background: var(--border);
   }
@@ -426,28 +454,15 @@
   .schedule-item::before {
     content: "";
     position: absolute;
-    right: -20px;
-    top: 6px;
-    width: 10px;
-    height: 10px;
+    right: -20px; top: 6px;
+    width: 10px; height: 10px;
     border-radius: 50%;
     background: var(--primary);
   }
-  .sch-time {
-    font-weight: 800;
-    color: var(--primary);
-    font-size: 0.95rem;
-  }
-  .sch-label {
-    font-size: 0.95rem;
-    color: var(--text);
-  }
+  .sch-time { font-weight: 800; color: var(--primary); font-size: 0.95rem; }
+  .sch-label { font-size: 0.95rem; color: var(--text); }
 
-  /* --- التنبيهات --- */
-  .alerts-list {
-    list-style: none;
-    text-align: right;
-  }
+  .alerts-list { list-style: none; text-align: right; }
   .alerts-list li {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -458,18 +473,8 @@
     font-size: 0.92rem;
   }
 
-  /* --- تأكيد الحضور --- */
-  .field {
-    text-align: right;
-    margin-bottom: 12px;
-  }
-  .field label {
-    display: block;
-    font-size: 0.88rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: var(--text);
-  }
+  .field { text-align: right; margin-bottom: 12px; }
+  .field label { display: block; font-size: 0.88rem; font-weight: 700; margin-bottom: 5px; color: var(--text); }
   input, select, textarea {
     width: 100%;
     padding: 11px 13px;
@@ -503,7 +508,6 @@
     border-color: var(--primary);
   }
 
-  /* --- سجل التهاني --- */
   .wishes-header-row {
     display: flex;
     justify-content: space-between;
@@ -519,11 +523,7 @@
     padding: 4px 12px;
     border-radius: 20px;
   }
-  .wishes-feed {
-    max-height: 250px;
-    overflow-y: auto;
-    text-align: right;
-  }
+  .wishes-feed { max-height: 250px; overflow-y: auto; text-align: right; }
   .wish-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -532,85 +532,42 @@
     margin-bottom: 8px;
     font-size: 0.9rem;
   }
-  .wish-card strong {
-    display: block;
-    color: var(--primary);
-    font-size: 0.86rem;
-    margin-bottom: 2px;
-  }
+  .wish-card strong { display: block; color: var(--primary); font-size: 0.86rem; margin-bottom: 2px; }
 
-  /* --- الشريط العائم --- */
   .bottom-bar {
     position: fixed;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 24px);
-    max-width: 496px;
+    bottom: 12px; left: 50%; transform: translateX(-50%);
+    width: calc(100% - 24px); max-width: 496px;
     background: rgba(34, 24, 21, 0.95);
-    padding: 9px 10px;
-    border-radius: 16px;
-    display: flex;
-    gap: 8px;
-    z-index: 900;
+    padding: 9px 10px; border-radius: 16px;
+    display: flex; gap: 8px; z-index: 900;
   }
   .bottom-bar button {
-    flex: 1;
-    padding: 10px 8px;
-    border-radius: 11px;
-    border: none;
-    font-family: 'Tajawal', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    cursor: pointer;
+    flex: 1; padding: 10px 8px; border-radius: 11px; border: none;
+    font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer;
   }
   #edit-access-btn { display: none; }
 
-  /* --- لوحة التعديل --- */
   #editor-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
+    display: none; position: fixed; inset: 0;
     background: rgba(20, 15, 14, 0.72);
-    z-index: 10000;
-    overflow-y: auto;
-    padding: 18px 14px 50px;
+    z-index: 10000; overflow-y: auto; padding: 18px 14px 50px;
   }
   #editor-modal.open { display: block; }
   .editor-card {
-    max-width: 520px;
-    margin: 0 auto;
-    background: #ffffff;
-    color: #2c221e;
-    border-radius: 20px;
-    padding: 20px;
+    max-width: 520px; margin: 0 auto;
+    background: #ffffff; color: #2c221e;
+    border-radius: 20px; padding: 20px;
   }
-  .editor-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
+  .editor-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
   .link-output {
-    display: none;
-    margin-top: 14px;
-    background: #f1f8f2;
-    border: 1px solid #8bc34a;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 0.82rem;
-    word-break: break-all;
+    display: none; margin-top: 14px;
+    background: #f1f8f2; border: 1px solid #8bc34a;
+    border-radius: 12px; padding: 12px;
+    font-size: 0.82rem; word-break: break-all;
   }
-  .guest-copy-box {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .guest-copy-box button {
-    width: auto;
-    padding: 0 16px;
-    flex-shrink: 0;
-  }
+  .guest-copy-box { display: flex; gap: 8px; margin-top: 8px; }
+  .guest-copy-box button { width: auto; padding: 0 16px; flex-shrink: 0; }
 </style>
 </head>
 <body class="theme-blush-olive">
@@ -618,38 +575,40 @@
 <div class="side-drape right"></div>
 <div class="side-drape left"></div>
 
-<!-- شاشة الظرف -->
 <div id="envelope-screen">
-  <div class="env-top-note">لقد تلقيت دعوة خاصة من</div>
-  <div class="env-couple-title"><span id="env-groom">يوسف</span><span class="amp">&</span><span id="env-bride">ليان</span></div>
+  <div class="env-header-box">
+    <div class="env-top-note">لقد تلقيت دعوة خاصة من</div>
+    <div class="env-couple-title"><span id="env-groom">يوسف</span><span class="amp">&</span><span id="env-bride">ليان</span></div>
+  </div>
 
-  <div class="envelope-box" id="envelope-box" onclick="openInvitation()">
+  <div class="env-ribbon-top">✦ دعوة زفاف مباركة ✦</div>
+
+  <div class="envelope-shell" id="envelope-shell" onclick="openInvitation()">
     <div class="envelope-flap"></div>
-    <div class="geo-border-top" id="env-top-badge">دعوة زفاف مباركة</div>
+    <div class="envelope-pocket"></div>
     <div class="wax-seal">
       <div class="initials" id="env-initials">ي & ل</div>
-      <div class="seal-sub">افتح الدعوة</div>
+      <div class="seal-tag">افتح</div>
     </div>
-    <div class="guest-badge">إلى الضيف الكريم: <strong id="env-guest-name">ضيفنا الكريم</strong></div>
-    <div class="geo-border-bottom">اضغط لفتح الظرف</div>
+    <div class="env-guest-card">إلى الضيف الكريم: <strong id="env-guest-name">ضيفنا الكريم</strong></div>
   </div>
+
+  <div class="env-footer-hint">اضغط على الظرف لفتح الدعوة</div>
 </div>
 
-<!-- محتوى الدعوة -->
 <div class="page-wrap">
 
-  <!-- البطاقة 1: الافتتاحية والتاريخ -->
   <div class="card">
     <div class="top-ornament">✦ بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ✦</div>
     <div class="verse">﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾</div>
-    <div class="invite-lead" id="view-lead">بكل الحب والسرور تتشرف عائلتا</div>
+    <div class="invite-lead">بكل الحب والسرور تتشرف عائلتا</div>
 
     <div class="parents-row">
-      <div><span>والد العريس</span><strong id="view-groom-family">آل بن علي</strong></div>
-      <div><span>والد العروس</span><strong id="view-bride-family">آل منصور</strong></div>
+      <div><span>عائلة العريس</span><strong id="view-groom-family">آل بن علي</strong></div>
+      <div><span>عائلة العروس</span><strong id="view-bride-family">آل منصور</strong></div>
     </div>
 
-    <div class="invite-lead" id="view-sub-lead">بدعوتكم لمشاركتنا فرحة حفل زفاف</div>
+    <div class="invite-lead">بدعوتكم لمشاركتنا فرحة حفل زفاف</div>
     <h1 class="couple-hero"><span id="view-groom">يوسف</span><span class="amp">&</span><span id="view-bride">ليان</span></h1>
 
     <div class="date-grid">
@@ -660,7 +619,6 @@
     <div class="time-line" id="view-time-text">الساعة 14:00 مساءً</div>
   </div>
 
-  <!-- البطاقة 2: العداد التنازلي وحفظ الموعد -->
   <div class="card">
     <h2 class="section-heading">على موعد</h2>
     <div class="section-sub">إلى أجمل يوم في حياتنا</div>
@@ -673,7 +631,6 @@
     <button class="btn btn-soft" onclick="downloadCalendarFile()">📅 احفظ الموعد بالتقويم</button>
   </div>
 
-  <!-- البطاقة 3: مكان الحفل -->
   <div class="card">
     <h2 class="section-heading">مكان الحفل</h2>
     <div class="section-sub">حيث نحتفل معاً</div>
@@ -684,21 +641,18 @@
     </div>
   </div>
 
-  <!-- البطاقة 4: البرنامج الزمني -->
   <div class="card">
     <h2 class="section-heading">البرنامج الزمني للحفل</h2>
     <div class="section-sub">تفاصيل اللقاء</div>
     <div class="schedule-list" id="view-schedule"></div>
   </div>
 
-  <!-- البطاقة 5: تنبيهات هامة -->
   <div class="card">
     <h2 class="section-heading">تنبيهات هامة</h2>
     <div class="section-sub">لراحة وسلامة الجميع</div>
     <ul class="alerts-list" id="view-alerts"></ul>
   </div>
 
-  <!-- البطاقة 6: تأكيد الحضور -->
   <div class="card">
     <h2 class="section-heading">تأكيد الحضور</h2>
     <div class="section-sub">شرفونا بحضوركم وأخبرونا إن كنتم ستشاركونا الفرحة</div>
@@ -720,7 +674,6 @@
     <button type="button" class="btn btn-primary" onclick="confirmRSVP()">تأكيد عبر واتساب</button>
   </div>
 
-  <!-- البطاقة 7: سجل التهاني -->
   <div class="card">
     <h2 class="section-heading">سجل التهاني</h2>
     <div class="section-sub">شاركونا أجمل التهاني والتبريكات</div>
@@ -745,13 +698,11 @@
 
 </div>
 
-<!-- الشريط السفلي -->
 <div class="bottom-bar">
   <button type="button" style="background:var(--gold); color:#ffffff;" onclick="reopenEnvelope()">✉️ إعادة فتح الظرف</button>
   <button type="button" id="edit-access-btn" style="background:#ffffff; color:#2c221e;" onclick="openEditor()">⚙️ تخصيص الدعوة</button>
 </div>
 
-<!-- نافذة التعديل -->
 <div id="editor-modal">
   <div class="editor-card">
     <div class="editor-top">
@@ -762,7 +713,7 @@
     <div class="field">
       <label>قالب التصميم (شكل وألوان الظرف والبطاقات)</label>
       <select id="ed-theme">
-        <option value="blush-olive">1. وردي ناعم وزيتوني (أسلوب الفيديو)</option>
+        <option value="blush-olive">1. وردي ناعم وزيتوني</option>
         <option value="royal-ivory">2. عاجي ملكي وعنابي ذهبي</option>
         <option value="emerald-gold">3. زمرّدي ليلي وذهبي عتيق</option>
       </select>
@@ -931,7 +882,7 @@
   }
 
   function openInvitation() {
-    const box = document.getElementById("envelope-box");
+    const box = document.getElementById("envelope-shell");
     box.classList.add("opening");
     setTimeout(() => {
       document.getElementById("envelope-screen").classList.add("opened");
@@ -939,7 +890,7 @@
   }
 
   function reopenEnvelope() {
-    document.getElementById("envelope-box").classList.remove("opening");
+    document.getElementById("envelope-shell").classList.remove("opening");
     document.getElementById("envelope-screen").classList.remove("opened");
   }
 
