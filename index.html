@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دعوة زفاف إلكترونية</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #8b2635;      /* عنابي ملكي */
+    --gold: #c59b27;         /* ذهبي */
+    --bg: #fdf8f5;           /* خلفية كريمية دافئة */
+    --card-bg: #ffffff;
+    --text: #2d2424;
+    --muted: #6e5d5d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.7;
+  }
+
+  /* --- شاشة الظرف السينمائي --- */
+  #envelope-screen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, #3a1017 0%, #1c060a 100%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #envelope-screen.opened {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .guest-welcome {
+    color: #f3e5d8;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .guest-welcome span {
+    display: block;
+    font-family: 'Amiri', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-top: 4px;
+  }
+
+  .envelope-wrapper {
+    position: relative;
+    width: 310px;
+    height: 210px;
+    background: #f5ebe0;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+    transition: transform 0.3s ease;
+  }
+  .envelope-wrapper:active { transform: scale(0.97); }
+
+  /* غطاء الظرف العلوي */
+  .envelope-flap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 115px;
+    background: linear-gradient(135deg, #ebd9c8 0%, #dcc3ab 100%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top;
+    transition: transform 0.7s ease;
+    z-index: 3;
+    border-bottom: 1px solid rgba(197, 155, 39, 0.4);
+  }
+  .envelope-wrapper.animating .envelope-flap {
+    transform: rotateX(180deg);
+  }
+
+  /* الختم الشمعي */
+  .wax-seal {
+    position: relative;
+    z-index: 4;
+    width: 68px;
+    height: 68px;
+    background: radial-gradient(circle at 30% 30%, #b32d40, #6b1420);
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fceabb;
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
+    font-weight: bold;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+  .envelope-wrapper.animating .wax-seal {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+
+  .tap-hint {
+    color: #d6c3b3;
+    font-size: 0.9rem;
+    margin-top: 22px;
+    animation: pulse 1.8s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* --- محتوى الدعوة الرئيسي --- */
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 20px 16px 90px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 28px 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 25px rgba(139, 38, 53, 0.06);
+    border: 1px solid rgba(197, 155, 39, 0.25);
+    text-align: center;
+    position: relative;
+  }
+
+  .bismillah {
+    font-family: 'Amiri', serif;
+    font-size: 1.35rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .quran-verse {
+    font-family: 'Amiri', serif;
+    font-size: 1.1rem;
+    color: var(--muted);
+    background: #faf4ef;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    border-right: 3px solid var(--gold);
+  }
+
+  .couple-names {
+    font-family: 'Amiri', serif;
+    font-size: 2.3rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin: 10px 0;
+    line-height: 1.3;
+  }
+  .couple-names .amp {
+    color: var(--gold);
+    font-size: 1.8rem;
+    margin: 0 8px;
+  }
+
+  .invite-text {
+    font-size: 0.98rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .date-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary), #631823);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 1px solid var(--gold);
+    margin: 8px 0 18px;
+  }
+
+  /* العد التنازلي */
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .time-box {
+    background: #faf4ef;
+    border: 1px solid rgba(197, 155, 39, 0.35);
+    border-radius: 12px;
+    padding: 10px 4px;
+  }
+  .time-box span {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .time-box small {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* عناوين الأقسام */
+  .section-title {
+    font-family: 'Amiri', serif;
+    font-size: 1.55rem;
+    color: var(--primary);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .section-title::before, .section-title::after {
+    content: "";
+    height: 1px;
+    width: 28px;
+    background: var(--gold);
+  }
+
+  /* الموقع */
+  .location-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  .location-address {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 14px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--primary);
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.92; }
+  .btn-gold {
+    background: linear-gradient(135deg, #c59b27, #a67c15);
+    color: #fff;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--primary);
+    color: var(--primary);
+    margin-top: 8px;
+  }
+
+  /* البرنامج الزمني */
+  .timeline {
+    text-align: right;
+    border-right: 2px solid var(--gold);
+    padding-right: 16px;
+    margin: 10px 12px 0 0;
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .timeline-item::before {
+    content: "";
+    position: absolute;
+    right: -22px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--gold);
+  }
+  .timeline-time {
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 0.9rem;
+  }
+  .timeline-desc {
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  /* التنبيهات */
+  .notes-list {
+    list-style: none;
+    text-align: right;
+  }
+  .notes-list li {
+    background: #faf4ef;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    border-right: 3px solid var(--primary);
+  }
+
+  /* حقول الإدخال */
+  .form-group {
+    margin-bottom: 12px;
+    text-align: right;
+  }
+  .form-group label {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #dccbc1;
+    border-radius: 10px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    background: #fff;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  /* سجل التهاني */
+  .wishes-list {
+    margin-top: 16px;
+    text-align: right;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+  .wish-item {
+    background: #faf4ef;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  .wish-item strong {
+    color: var(--primary);
+    display: block;
+    font-size: 0.85rem;
+  }
+
+  /* الشريط العائم السفلي */
+  .floating-bar {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 496px;
+    background: rgba(45, 36, 36, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 10px 12px;
+    border-radius: 16px;
+    display: flex;
+    gap: 8px;
+    z-index: 900;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  }
+  .floating-bar button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  /* --- لوحة تعديل الزبون (Modal) --- */
+  #editor-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #f4f1ee;
+    z-index: 10000;
+    overflow-y: auto;
+    padding: 20px 16px 60px;
+  }
+  #editor-panel.active { display: block; }
+  .editor-box {
+    max-width: 520px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  .editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  .generated-link-box {
+    background: #eef7ee;
+    border: 1px solid #8bc34a;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 14px;
+    word-break: break-all;
+    font-size: 0.82rem;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. شاشة الظرف التفاعلي -->
+<div id="envelope-screen">
+  <div class="guest-welcome">
+    دعوة خاصة إلى
+    <span id="guest-name-display">ضيفنا الكريم</span>
+  </div>
+  <div class="envelope-wrapper" id="envelope" onclick="openEnvelope()">
+    <div class="envelope-flap"></div>
+    <div class="wax-seal" id="seal-initials">ي & ل</div>
+  </div>
+  <div class="tap-hint">اضغط على الختم لفتح الدعوة</div>
+</div>
+
+<!-- 2. محتوى بطاقة الدعوة -->
+<div class="container">
+  <!-- البطاقة الترحيبية -->
+  <div class="card">
+    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    <div class="quran-verse">
+      ﴿ وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ﴾
+    </div>
+    <p class="invite-text" id="view-intro">تتشرف عائلتا العروسين بدعوتكم لحضور حفل زفاف</p>
+    <h1 class="couple-names">
+      <span id="view-groom">يوسف</span>
+      <span class="amp">&</span>
+      <span id="view-bride">ليان</span>
+    </h1>
+    <div class="date-badge" id="view-date-text">السبت 15 أوت 2026 - الساعة 14:00</div>
+
+    <!-- العد التنازلي -->
+    <div class="countdown">
+      <div class="time-box"><span id="cd-days">00</span><small>يوم</small></div>
+      <div class="time-box"><span id="cd-hours">00</span><small>ساعة</small></div>
+      <div class="time-box"><span id="cd-mins">00</span><small>دقيقة</small></div>
+      <div class="time-box"><span id="cd-secs">00</span><small>ثانية</small></div>
+    </div>
+  </div>
+
+  <!-- مكان الحفل -->
+  <div class="card">
+    <h2 class="section-title">مكان الحفل</h2>
+    <div class="location-name" id="view-venue">قاعة الحفلات الملكية - قصر البهجة</div>
+    <div class="location-address" id="view-address">الجزائر العاصمة - الطريق السريع</div>
+    <a id="view-map-link" href="https://maps.google.com" target="_blank" class="btn">
+      📍 فتح الموقع على خرائط Google
+    </a>
+  </div>
+
+  <!-- البرنامج الزمني -->
+  <div class="card">
+    <h2 class="section-title">برنامج الحفل</h2>
+    <div class="timeline" id="view-timeline">
+      <div class="timeline-item">
+        <div class="timeline-time">13:30 مساءً</div>
+        <div class="timeline-desc">استقبال الضيوف الكرام</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">14:30 مساءً</div>
+        <div class="timeline-desc">مأدبة الغداء على شرف الحضور</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-time">16:30 مساءً</div>
+        <div class="timeline-desc">الزفة وتقديم الشاي والحلويات</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- تنبيهات هامة -->
+  <div class="card">
+    <h2 class="section-title">ملاحظات وتنبيهات</h2>
+    <ul class="notes-list" id="view-notes">
+      <li>نرجو تأكيد الحضور لتسهيل تنظيم المقاعد والضيافة.</li>
+      <li>يُمنع التصوير حفاظاً على خصوصية العائلات.</li>
+      <li>نعتذر عن استقبال الأطفال (جنة الأطفال منازلهم).</li>
+    </ul>
+  </div>
+
+  <!-- تأكيد الحضور (RSVP) -->
+  <div class="card">
+    <h2 class="section-title">تأكيد الحضور</h2>
+    <p class="invite-text">يسعدنا تأكيد حضوركم عبر إرسال ردكم مباشرة</p>
+    <div class="form-group">
+      <label>الاسم الكامل أو اسم العائلة</label>
+      <input type="text" id="rsvp-name" placeholder="مثال: عائلة بن علي">
+    </div>
+    <div class="form-group">
+      <label>حالة الحضور</label>
+      <select id="rsvp-status">
+        <option value="سأحضر بإذن الله ✅">سأحضر بإذن الله ✅</option>
+        <option value="أعتذر لظروف خاصة ❌">أعتذر لظروف خاصة ❌</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>عدد الأشخاص المرافقين</label>
+      <input type="number" id="rsvp-count" value="1" min="1" max="10">
+    </div>
+    <button class="btn btn-gold" onclick="sendRSVP()">إرسال تأكيد الحضور عبر واتساب</button>
+  </div>
+
+  <!-- سجل التهاني -->
+  <div class="card">
+    <h2 class="section-title">سجل التهاني</h2>
+    <div class="form-group">
+      <input type="text" id="wish-author" placeholder="اسمك الكريم">
+    </div>
+    <div class="form-group">
+      <textarea id="wish-text" rows="2" placeholder="اكتب تهنئة جميلة للعروسين..."></textarea>
+    </div>
+    <button class="btn btn-outline" onclick="addWish()">إضافة التهنئة</button>
+    <div class="wishes-list" id="wishes-container">
+      <div class="wish-item">
+        <strong>عائلة محمد</strong>
+        بارك الله لكما وبارك عليكما وجمع بينكما في خير.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- الشريط السفلي العائم -->
+<div class="floating-bar">
+  <button style="background:#c59b27; color:#fff;" onclick="replayEnvelope()">✉️ إعادة فتح الظرف</button>
+  <button style="background:#ffffff; color:#2d2424;" onclick="openEditor()">⚙️ تعديل الكرت (للزبون)</button>
+</div>
+
+<!-- 3. لوحة التعديل للزبون -->
+<div id="editor-panel">
+  <div class="editor-box">
+    <div class="editor-header">
+      <h3 style="color:var(--primary);">تخصيص بطاقة الدعوة</h3>
+      <button onclick="closeEditor()" style="border:none; background:#eee; padding:6px 12px; border-radius:8px; cursor:pointer;">إغلاق ✖</button>
+    </div>
+
+    <div class="form-group">
+      <label>اسم العريس</label>
+      <input type="text" id="edit-groom" value="يوسف">
+    </div>
+    <div class="form-group">
+      <label>اسم العروس</label>
+      <input type="text" id="edit-bride" value="ليان">
+    </div>
+    <div class="form-group">
+      <label>نص الدعوة الترحيبي</label>
+      <input type="text" id="edit-intro" value="تتشرف عائلتا العروسين بدعوتكم لحضور حفل زفاف">
+    </div>
+    <div class="form-group">
+      <label>تاريخ ووقت الحفل (نص يظهر في البطاقة)</label>
+      <input type="text" id="edit-date-text" value="السبت 15 أوت 2026 - الساعة 14:00">
+    </div>
+    <div class="form-group">
+      <label>تاريخ العد التنازلي الدقيق</label>
+      <input type="datetime-local" id="edit-countdown" value="2026-08-15T14:00">
+    </div>
+    <div class="form-group">
+      <label>اسم القاعة أو المكان</label>
+      <input type="text" id="edit-venue" value="قاعة الحفلات الملكية - قصر البهجة">
+    </div>
+    <div class="form-group">
+      <label>العنوان التفصيلي</label>
+      <input type="text" id="edit-address" value="الجزائر العاصمة - الطريق السريع">
+    </div>
+    <div class="form-group">
+      <label>رابط موقع Google Maps</label>
+      <input type="url" id="edit-map" value="https://maps.google.com">
+    </div>
+    <div class="form-group">
+      <label>رقم واتساب لاستقبال تأكيد الحضور (مع رمز الدولة 213)</label>
+      <input type="tel" id="edit-whatsapp" value="213550000000" placeholder="213550123456">
+    </div>
+    <div class="form-group">
+      <label>ملاحظات الحفل (كل ملاحظة في سطر)</label>
+      <textarea id="edit-notes" rows="3">نرجو تأكيد الحضور لتسهيل تنظيم المقاعد والضيافة.
+يُمنع التصوير حفاظاً على خصوصية العائلات.
+نعتذر عن استقبال الأطفال (جنة الأطفال منازلهم).</textarea>
+    </div>
+
+    <button class="btn btn-gold" onclick="saveAndGenerateLink()">💾 حفظ التعديلات وتوليد رابط الدعوة</button>
+
+    <div class="generated-link-box" id="link-result-box">
+      <strong>✅ رابط الدعوة العام الجاهز للإرسال:</strong>
+      <p id="final-url" style="margin:6px 0; color:#1b5e20;"></p>
+      <button class="btn" style="padding:8px; font-size:0.85rem;" onclick="copyFinalLink()">نسخ الرابط</button>
+
+      <hr style="margin:12px 0; border:0; border-top:1px solid #cde5cd;">
+      <strong>🎯 توليد رابط مخصص باسم ضيف معين:</strong>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <input type="text" id="custom-guest-input" placeholder="اكتب اسم الضيف (مثلاً: عمي أحمد)">
+        <button class="btn btn-gold" style="width:auto; padding:0 14px;" onclick="copyGuestLink()">نسخ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // البيانات الافتراضية
+  let cardData = {
+    groom: "يوسف",
+    bride: "ليان",
+    intro: "تتشرف عائلتا العروسين بدعوتكم لحضور حفل زفاف",
+    dateText: "السبت 15 أوت 2026 - الساعة 14:00",
+    countdown: "2026-08-15T14:00",
+    venue: "قاعة الحفلات الملكية - قصر البهجة",
+    address: "الجزائر العاصمة - الطريق السريع",
+    map: "https://maps.google.com",
+    whatsapp: "213550000000",
+    notes: "نرجو تأكيد الحضور لتسهيل تنظيم المقاعد والضيافة.\nيُمنع التصوير حفاظاً على خصوصية العائلات.\nنعتذر عن استقبال الأطفال (جنة الأطفال منازلهم)."
+  };
+
+  // قراءة البيانات من الرابط عند الفتح (إن وجدت)
+  function loadFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // اسم الضيف المخصص
+    const guest = params.get("to");
+    if (guest) {
+      document.getElementById("guest-name-display").textContent = guest;
+      document.getElementById("rsvp-name").value = guest;
+    }
+
+    // بيانات الكرت المشفرة داخل الرابط
+    const encodedData = params.get("d");
+    if (encodedData) {
+      try {
+        const jsonStr = decodeURIComponent(escape(atob(encodedData)));
+        cardData = { ...cardData, ...JSON.parse(jsonStr) };
+      } catch (e) {
+        console.error("خطأ في قراءة بيانات الرابط", e);
+      }
+    }
+
+    // فتح لوحة التعديل مباشرة إذا كان الرابط يحتوي على ?edit=1
+    if (params.get("edit") === "1") {
+      openEditor();
+    }
+
+    applyDataToUI();
+  }
+
+  // تطبيق البيانات على واجهة الكرت
+  function applyDataToUI() {
+    document.getElementById("view-groom").textContent = cardData.groom;
+    document.getElementById("view-bride").textContent = cardData.bride;
+    document.getElementById("seal-initials").textContent = `${cardData.groom.charAt(0)} & ${cardData.bride.charAt(0)}`;
+    document.getElementById("view-intro").textContent = cardData.intro;
+    document.getElementById("view-date-text").textContent = cardData.dateText;
+    document.getElementById("view-venue").textContent = cardData.venue;
+    document.getElementById("view-address").textContent = cardData.address;
+    document.getElementById("view-map-link").href = cardData.map;
+
+    // تحديث قائمة الملاحظات
+    const notesContainer = document.getElementById("view-notes");
+    notesContainer.innerHTML = "";
+    cardData.notes.split("\n").filter(n => n.trim() !== "").forEach(note => {
+      const li = document.createElement("li");
+      li.textContent = note;
+      notesContainer.appendChild(li);
+    });
+
+    // تعبئة حقول المحرر أيضاً
+    document.getElementById("edit-groom").value = cardData.groom;
+    document.getElementById("edit-bride").value = cardData.bride;
+    document.getElementById("edit-intro").value = cardData.intro;
+    document.getElementById("edit-date-text").value = cardData.dateText;
+    document.getElementByI
