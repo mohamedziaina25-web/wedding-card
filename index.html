@@ -97,6 +97,40 @@
   }
   .envelope-wrapper.animating .wax-seal { transform: scale(1.3); opacity: 0; }
   .tap-hint { color: #d6c3b3; font-size: 0.9rem; margin-top: 22px; }
+
+  /* --- قوالب الظرف --- */
+  #envelope-screen.theme-emerald {
+    background: radial-gradient(circle at center, #183a2e 0%, #091812 100%);
+  }
+  #envelope-screen.theme-emerald .envelope-wrapper {
+    background: #f7f4ee;
+    border-color: #7cc4a5;
+  }
+  #envelope-screen.theme-emerald .envelope-flap {
+    background: linear-gradient(135deg, #e5ddd0 0%, #cfc3b0 100%);
+  }
+  #envelope-screen.theme-emerald .wax-seal {
+    background: radial-gradient(circle at 30% 30%, #247a5b, #0f3d2c);
+    border-color: #e9d8a6;
+    color: #f8f3e3;
+  }
+
+  #envelope-screen.theme-midnight {
+    background: radial-gradient(circle at center, #142238 0%, #070c14 100%);
+  }
+  #envelope-screen.theme-midnight .envelope-wrapper {
+    background: #1b2a44;
+    border-color: #d4af37;
+  }
+  #envelope-screen.theme-midnight .envelope-flap {
+    background: linear-gradient(135deg, #253859 0%, #152136 100%);
+  }
+  #envelope-screen.theme-midnight .wax-seal {
+    background: radial-gradient(circle at 30% 30%, #d4af37, #8a6a12);
+    border-color: #fff3c4;
+    color: #111827;
+  }
+
   .container { max-width: 520px; margin: 0 auto; padding: 20px 16px 90px; }
   .card {
     background: var(--card-bg);
@@ -271,6 +305,14 @@
       <h3 style="color:var(--primary);">تخصيص بطاقة الدعوة</h3>
       <button onclick="closeEditor()" style="border:none; background:#eee; padding:6px 12px; border-radius:8px;">إغلاق ✖</button>
     </div>
+    <div class="form-group">
+      <label>قالب شكل الظرف</label>
+      <select id="edit-theme">
+        <option value="royal">عنابي ملكي بختم ذهبي</option>
+        <option value="emerald">لؤلؤي ناعم بختم أخضر زمرّدي</option>
+        <option value="midnight">كحلي ليلي بختم ذهبي</option>
+      </select>
+    </div>
     <div class="form-group"><label>اسم العريس</label><input type="text" id="edit-groom" value="يوسف"></div>
     <div class="form-group"><label>اسم العروس</label><input type="text" id="edit-bride" value="ليان"></div>
     <div class="form-group"><label>نص الدعوة</label><input type="text" id="edit-intro" value="تتشرف عائلتا العروسين بدعوتكم لحضور حفل زفاف"></div>
@@ -301,6 +343,7 @@
 
 <script>
   const defaults = {
+    theme: "royal",
     groom: "يوسف", bride: "ليان",
     intro: "تتشرف عائلتا العروسين بدعوتكم لحضور حفل زفاف",
     dateText: "السبت 15 أوت 2026 - الساعة 14:00",
@@ -313,7 +356,14 @@
   };
   let cardData = { ...defaults };
 
-  const keyMap = { g: "groom", b: "bride", i: "intro", dt: "dateText", cd: "countdown", v: "venue", a: "address", m: "map", w: "whatsapp", n: "notes" };
+  const keyMap = { t: "theme", g: "groom", b: "bride", i: "intro", dt: "dateText", cd: "countdown", v: "venue", a: "address", m: "map", w: "whatsapp", n: "notes" };
+
+  function applyEnvelopeTheme(themeName) {
+    const screen = document.getElementById("envelope-screen");
+    screen.classList.remove("theme-royal", "theme-emerald", "theme-midnight");
+    const safeTheme = ["royal", "emerald", "midnight"].includes(themeName) ? themeName : "royal";
+    screen.classList.add("theme-" + safeTheme);
+  }
 
   function loadFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -338,6 +388,7 @@
   }
 
   function applyDataToUI() {
+    applyEnvelopeTheme(cardData.theme);
     document.getElementById("view-groom").textContent = cardData.groom;
     document.getElementById("view-bride").textContent = cardData.bride;
     document.getElementById("seal-initials").textContent = cardData.groom.charAt(0) + " & " + cardData.bride.charAt(0);
@@ -353,6 +404,7 @@
       li.textContent = note;
       notesContainer.appendChild(li);
     });
+    document.getElementById("edit-theme").value = cardData.theme;
     document.getElementById("edit-groom").value = cardData.groom;
     document.getElementById("edit-bride").value = cardData.bride;
     document.getElementById("edit-intro").value = cardData.intro;
@@ -409,6 +461,7 @@
   let generatedBaseUrl = "";
   function saveAndGenerateLink() {
     cardData = {
+      theme: document.getElementById("edit-theme").value,
       groom: document.getElementById("edit-groom").value,
       bride: document.getElementById("edit-bride").value,
       intro: document.getElementById("edit-intro").value,
