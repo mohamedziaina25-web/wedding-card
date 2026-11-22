@@ -420,4 +420,35 @@
       whatsapp: document.getElementById("edit-whatsapp").value,
       notes: document.getElementById("edit-notes").value
     };
-    applyDataToUI(
+    applyDataToUI();
+
+    const compact = {};
+    Object.keys(keyMap).forEach(shortKey => {
+      const fullKey = keyMap[shortKey];
+      if (cardData[fullKey] !== defaults[fullKey]) {
+        compact[shortKey] = cardData[fullKey];
+      }
+    });
+
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+    generatedBaseUrl = `${window.location.origin}${window.location.pathname}?d=${encoded}`;
+    document.getElementById("final-url").textContent = generatedBaseUrl;
+    document.getElementById("link-result-box").style.display = "block";
+  }
+
+  function copyFinalLink() {
+    navigator.clipboard.writeText(generatedBaseUrl);
+    alert("تم نسخ الرابط بنجاح!");
+  }
+  function copyGuestLink() {
+    const guestName = document.getElementById("custom-guest-input").value.trim();
+    if (!guestName) return alert("اكتب اسم الضيف أولاً");
+    const sep = generatedBaseUrl.includes("?") ? "&" : "?";
+    navigator.clipboard.writeText(`${generatedBaseUrl}${sep}to=${encodeURIComponent(guestName)}`);
+    alert(`تم نسخ الرابط الخاص بـ (${guestName})!`);
+  }
+
+  loadFromURL();
+</script>
+</body>
+</html>
