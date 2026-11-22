@@ -207,6 +207,7 @@
     flex: 1; padding: 10px; border-radius: 10px; border: none;
     font-family: 'Tajawal', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer;
   }
+  #edit-btn { display: none; }
   #editor-panel {
     display: none; position: fixed; inset: 0; background: #f4f1ee;
     z-index: 10000; overflow-y: auto; padding: 20px 16px 60px;
@@ -296,7 +297,7 @@
 
 <div class="floating-bar">
   <button style="background:#c59b27; color:#fff;" onclick="replayEnvelope()">✉️ إعادة فتح الظرف</button>
-  <button style="background:#ffffff; color:#2d2424;" onclick="openEditor()">⚙️ تعديل الكرت (للزبون)</button>
+  <button id="edit-btn" style="background:#ffffff; color:#2d2424;" onclick="openEditor()">⚙️ تعديل الكرت</button>
 </div>
 
 <div id="editor-panel">
@@ -342,6 +343,7 @@
 </div>
 
 <script>
+  const ACCESS_KEY = "DZ2026";
   const defaults = {
     theme: "royal",
     groom: "يوسف", bride: "ليان",
@@ -367,6 +369,11 @@
 
   function loadFromURL() {
     const params = new URLSearchParams(window.location.search);
+    const hasAccess = params.get("key") === ACCESS_KEY;
+    if (hasAccess) {
+      document.getElementById("edit-btn").style.display = "inline-block";
+    }
+
     const guest = params.get("to");
     if (guest) {
       document.getElementById("guest-name-display").textContent = guest;
@@ -383,7 +390,7 @@
         cardData = { ...defaults, ...expanded };
       } catch (e) {}
     }
-    if (params.get("edit") === "1") openEditor();
+    if (params.get("edit") === "1" && hasAccess) openEditor();
     applyDataToUI();
   }
 
